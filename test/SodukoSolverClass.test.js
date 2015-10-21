@@ -78,8 +78,7 @@ describe('SudokuSolver Unit tests', () => {
   it('Should return the variables of the cells unit', (done) => {
     var sudokuSolver = new SudokuSolver();
     sudokuSolver.setBoard("easy.txt");
-    var unit = sudokuSolver._getUnitNumberForCell(3,1);
-    var variableArray = sudokuSolver._getVariablesFromUnit(unit.x, unit.y);
+    var variableArray = sudokuSolver._getVariablesFromUnit(3, 1);
 
     expect(variableArray[0].getValue()).to.be.eql(0);
     expect(variableArray[1].getValue()).to.be.eql(0);

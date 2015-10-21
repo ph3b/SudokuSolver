@@ -28,12 +28,12 @@ class SudokuSolver {
       })
     });
     console.log(board);
-  }
-
+  };
 
   applyConstraints(){
     this._hasValidBoard();
     var counter = 0;
+
     while(this._boardHasNotBeenComplete()) {
       counter++;
       this.board.forEach((row, rowIndex) => {
@@ -44,7 +44,8 @@ class SudokuSolver {
         })
       });
     }
-  }
+  };
+
 
   //  ==== Algorithm helper function ======
 
@@ -64,23 +65,24 @@ class SudokuSolver {
 
   _updateConstraintsOnCell(cellX, cellY){
     var cell = this.board[cellX][cellY];
-    let tempDomain = cell.getDomain();
-    tempDomain = this._difference(tempDomain, this._getVariablesFromColumn(cellY));
-    tempDomain = this._difference(tempDomain, this._getVariablesFromRow(cellX));
-    var unit = this._getUnitNumberForCell(cellX, cellY);
-    tempDomain = this._difference(tempDomain, this._getVariablesFromUnit(unit.x, unit.y));
+    let newDomain = cell.getDomain();
+    newDomain = this._difference(newDomain, this._getVariablesFromColumn(cellY));
+    newDomain = this._difference(newDomain, this._getVariablesFromRow(cellX));
+    newDomain = this._difference(newDomain, this._getVariablesFromUnit(cellX, cellY));
 
     // Blir skummel hvis domain skal kunne gå ned til 0.
-    if(tempDomain.length == 1){
-      cell.setValue(tempDomain[0].getValue());
+    if(newDomain.length == 1){
+      cell.setValue(newDomain[0].getValue());
     }
-    cell.setDomain(tempDomain);
+    cell.setDomain(newDomain);
     return cell;
 
   }
 
   _difference(array1, array2){
     var differenceArray = clone(array1);
+
+    // Evt bli litt smartere
     for(var i = 0; i < array2.length; i++){
       for(var k = 0; k < array1.length; k++){
         if(array1[k].getValue() == array2[i].getValue()){
@@ -88,6 +90,7 @@ class SudokuSolver {
         }
       }
     }
+
     while(differenceArray.indexOf(null) > -1){
       differenceArray.splice(differenceArray.indexOf(null), 1);
     }
@@ -107,9 +110,10 @@ class SudokuSolver {
     return columnArray;
   }
   _getVariablesFromUnit(unitX, unitY){
+    var unit = this._getUnitNumberForCell(unitX, unitY);
     var unitArray = [];
-    var xStartIndex = unitX * 3;
-    var yStartIndex = unitY * 3;
+    var xStartIndex = unit.x * 3;
+    var yStartIndex = unit.y * 3;
     for(var k = 0; k < 3; k++){
       unitArray.push(this.board[xStartIndex+k][yStartIndex]);
       unitArray.push(this.board[xStartIndex+k][yStartIndex+1]);
