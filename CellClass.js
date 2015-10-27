@@ -28,7 +28,6 @@ class Cell {
     this.value = value;
     return this;
   }
-
   setDomain(domain){
     this.domain = domain;
   }

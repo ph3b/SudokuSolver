@@ -3,7 +3,7 @@
  */
 import expect from 'expect.js';
 import Cell from './../CellClass.js';
-
+import Constants from './../Constants.js';
 import SudokuSolver from './../SudokuSolverClass.js';
 
 describe('SudokuSolver Unit tests', () => {
@@ -95,7 +95,7 @@ describe('SudokuSolver Unit tests', () => {
   it('Should apply constraints to all cells', (done) => {
     var sudokuSolver = new SudokuSolver();
     sudokuSolver.setBoard("easy.txt");
-    sudokuSolver.applyConstraints();
+    sudokuSolver._runAC3();
     var counter = 0;
     sudokuSolver.board.forEach((row) => {
       row.forEach((cell) => {
@@ -104,7 +104,6 @@ describe('SudokuSolver Unit tests', () => {
         }
       })
     });
-
     expect(counter).to.be.eql(0);
     done();
   });
@@ -143,18 +142,71 @@ describe('SudokuSolver Unit tests', () => {
     done();
   });
 
+
+
+  it('Should say that we made the wrong choice', (done) => {
+    var sudokuSolver = new SudokuSolver();
+    sudokuSolver.setBoard("wrongboard.txt");
+    expect(sudokuSolver._runAC3()).to.be.eql(Constants.WRONG_CHOICE);
+    done();
+  });
+
+
+  it('Should try to solve hard board with only AC3 but leave it unfinished', (done) => {
+    var sudokuSolver = new SudokuSolver();
+    sudokuSolver.setBoard("hard.txt");
+    expect(sudokuSolver._runAC3()).to.be.eql(Constants.UNFINISHED);
+    done();
+  });
+
+});
+
+describe("SudokuSolver Solving tests", () => {
+  it('Should solve easy board', (done) => {
+    var sudokuSolver = new SudokuSolver();
+    sudokuSolver.setBoard("easy.txt");
+    sudokuSolver.solve();
+
+    expect(sudokuSolver.getBoard()[0][1].getValue()).to.be.eql(1);
+    expect(sudokuSolver.getBoard()[0][5].getValue()).to.be.eql(3);
+    expect(sudokuSolver.getBoard()[0][6].getValue()).to.be.eql(2);
+    expect(sudokuSolver.getBoard()[8][7].getValue()).to.be.eql(3);
+    sudokuSolver.printBoard();
+    done();
+  });
+
   it('Should solve medium board', (done) => {
     var sudokuSolver = new SudokuSolver();
     sudokuSolver.setBoard("medium.txt");
     sudokuSolver.solve();
-
     expect(sudokuSolver.getBoard()[0][1].getValue()).to.be.eql(3);
     expect(sudokuSolver.getBoard()[0][4].getValue()).to.be.eql(2);
     expect(sudokuSolver.getBoard()[0][5].getValue()).to.be.eql(7);
     expect(sudokuSolver.getBoard()[0][7].getValue()).to.be.eql(4);
     expect(sudokuSolver.getBoard()[0][8].getValue()).to.be.eql(8);
+    sudokuSolver.printBoard();
     done();
   });
 
+  it('Should solve hard board', (done) => {
+    var sudokuSolver = new SudokuSolver();
+    sudokuSolver.setBoard("hard.txt");
+    sudokuSolver.solve();
+    expect(sudokuSolver.getBoard()[0][0].getValue()).to.be.eql(8);
+    expect(sudokuSolver.getBoard()[0][2].getValue()).to.be.eql(2);
+    expect(sudokuSolver.getBoard()[0][7].getValue()).to.be.eql(6);
+    expect(sudokuSolver.getBoard()[0][8].getValue()).to.be.eql(4);
+    expect(sudokuSolver.getBoard()[8][8].getValue()).to.be.eql(5);
+    sudokuSolver.printBoard();
+    done();
+  });
 
+  it('Should solve very hard board', (done) => {
+    var sudokuSolver = new SudokuSolver();
+    sudokuSolver.setBoard("veryhard.txt");
+    sudokuSolver.solve();
+    sudokuSolver.printBoard();
+    done();
+
+  });
 });
